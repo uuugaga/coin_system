@@ -89,7 +89,7 @@ class AlbionGoldSystem:
                     unit = total_silver // sell_price - 2
 
                     if unit > 0:
-                        action.Buy_GoldCoin(unit, sell_price)
+                        action.Buy_GoldCoin(unit, sell_price, refresh=False)
                         buying_time = time.time()
                         self.buying = True
                         buying_price = copy.deepcopy(sell_price)
@@ -107,7 +107,7 @@ class AlbionGoldSystem:
                     unit = total_silver // sell_price - 2
 
                     if unit > 0:
-                        action.Buy_GoldCoin(unit, sell_price)
+                        action.Buy_GoldCoin(unit, sell_price, refresh=False)
                         buying_time = time.time()
                         self.buying = True
                         buying_price = copy.deepcopy(sell_price)
@@ -124,7 +124,7 @@ class AlbionGoldSystem:
                     unit = total_gold - 2
 
                     if unit > 0:
-                        action.Sell_GoldCoin(unit, buy_price)
+                        action.Sell_GoldCoin(unit, buy_price, refresh=False)
                         selling_time = time.time()
                         self.selling = True
                         selling_price = copy.deepcopy(buy_price)
@@ -142,7 +142,7 @@ class AlbionGoldSystem:
                     unit = total_gold - 2
 
                     if unit > 0:
-                        action.Sell_GoldCoin(unit, buy_price)
+                        action.Sell_GoldCoin(unit, buy_price, refresh=False)
                         selling_time = time.time()
                         self.selling = True
                         selling_price = copy.deepcopy(buy_price)
