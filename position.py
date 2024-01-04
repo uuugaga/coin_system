@@ -21,6 +21,7 @@ Sell_cancel_button_position = (x1 + width * 0.7283, y1 + height * 0.8142)
 Cancel_check_position = (x1 + width * 0.4212, y1 + height * 0.5019)
 Buy_check_position = (x1 + 798, y1 + 451)
 Bought_Sold_check_position = (x1 + 648, y1 + 378)
+Have_bought_sold_check_position = (x1 + 640, y1 + 440)
 Buy_button_position_img = (x1 + width * 0.7292 - 25, y1 + height * 0.6680 - 5, x1 + width * 0.7292 + 25, y1 + height * 0.6680 + 3)
 Sell_button_position_img = (x1 + width * 0.7292 - 25, y1 + height * 0.7891 - 5, x1 + width * 0.7292 + 25, y1 + height * 0.7891 + 3)
 

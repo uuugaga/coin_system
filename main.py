@@ -80,72 +80,20 @@ class AlbionGoldSystem:
             # Check if bought
             if self.buying and action.check_bought(refresh=False):
                 self.buying = False
-
-                # Buying logic
-                if not self.buying:
-                    if buy_price - sell_price > 2:
-                        sell_price += 1
-
-                    unit = total_silver // sell_price - 2
-
-                    if unit > 0:
-                        action.Buy_GoldCoin(unit, sell_price, refresh=False)
-                        buying_time = time.time()
-                        self.buying = True
-                        buying_price = copy.deepcopy(sell_price)
                         
             # Cancel buying if conditions met
             elif self.buying and (time.time() - buying_time > self.wait_time or buying_price < sell_price):
                 action.Buy_GoldCoin_Cancel(refresh=False)
                 self.buying = False
 
-                # Buying logic
-                if not self.buying:
-                    if buy_price - sell_price > 2:
-                        sell_price += 1
-
-                    unit = total_silver // sell_price - 2
-
-                    if unit > 0:
-                        action.Buy_GoldCoin(unit, sell_price, refresh=False)
-                        buying_time = time.time()
-                        self.buying = True
-                        buying_price = copy.deepcopy(sell_price)
-
             # Check if sold
             if self.selling and action.check_sold(refresh=False):
                 self.selling = False
-
-                # Selling logic
-                if not self.selling:
-                    if buy_price - sell_price > 2:
-                        buy_price -= 1
-
-                    unit = total_gold - 2
-
-                    if unit > 0:
-                        action.Sell_GoldCoin(unit, buy_price, refresh=False)
-                        selling_time = time.time()
-                        self.selling = True
-                        selling_price = copy.deepcopy(buy_price)
 
             # Cancel selling if conditions met
             elif self.selling and (time.time() - selling_time > self.wait_time or selling_price > buy_price):
                 action.Sell_GoldCoin_Cancel(refresh=False)
                 self.selling = False
-
-                # Selling logic
-                if not self.selling:
-                    if buy_price - sell_price > 2:
-                        buy_price -= 1
-
-                    unit = total_gold - 2
-
-                    if unit > 0:
-                        action.Sell_GoldCoin(unit, buy_price, refresh=False)
-                        selling_time = time.time()
-                        self.selling = True
-                        selling_price = copy.deepcopy(buy_price)
 
             # Periodic display
             if time.time() - self.showing_time > 60 * 30:
@@ -171,7 +119,7 @@ class AlbionGoldSystem:
         valuation = total_gold * (buy_price - 1) + total_silver - self.valuation_start
         # print("----------------------------------------------------------------")
         # print(f'Asset gold={total_gold}, asset silver={total_silver}, buy price:{buy_price}, sell price:{sell_price}')
-        print(f'Valuation: {(valuation / 1000000):3f} m, Rate: {((valuation - self.valuation_previous) * 2 / 1000000):3f} (m/hr), Duration: {datetime.datetime.now().replace(microsecond=0) - self.start_datetime}')
+        print(f'Valuation: {(valuation / 1000000):.3f} m, Rate: {((valuation - self.valuation_previous) * 2 / 1000000):.3f} (m/hr), Duration: {datetime.datetime.now().replace(microsecond=0) - self.start_datetime}')
         self.valuation_previous = copy.deepcopy(valuation)
 
     def handle_daily_reset(self):

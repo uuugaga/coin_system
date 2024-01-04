@@ -63,7 +63,7 @@ def Buy_GoldCoin_Cancel(refresh=True):
     """
     if refresh:
         click.click(position.Order)
-    # click.click(position.Bought_Sold_check_position)
+    # click.click(position.Have_bought_sold_check_position)
     click.click(position.Buy_cancel_button_position)
     click.click(position.Cancel_check_position)
 
@@ -74,7 +74,7 @@ def Sell_GoldCoin_Cancel(refresh=True):
     """
     if refresh:
         click.click(position.Order)
-    # click.click(position.Bought_Sold_check_position)
+    # click.click(position.Have_bought_sold_check_position)
     click.click(position.Sell_cancel_button_position)
     click.click(position.Cancel_check_position)
 
@@ -86,7 +86,7 @@ def check_bought(refresh=True):
     if refresh:
         click.click(position.GetCoin)
         click.click(position.Order)
-    # click.click(position.Buy_check_position)
+    click.click(position.Have_bought_sold_check_position)
     image = ImageGrab.grab(position.Buy_button_position_img).convert('L').resize((8, 50))
     image = np.array(image)
     return image.sum() > 27000
@@ -99,7 +99,7 @@ def check_sold(refresh=True):
     if refresh:
         click.click(position.GetCoin)
         click.click(position.Order)
-    # click.click(position.Buy_check_position)
+    click.click(position.Have_bought_sold_check_position)
     image = ImageGrab.grab(position.Sell_button_position_img).convert('L').resize((8, 50))
     image = np.array(image)
     return image.sum() > 27000
