@@ -1,6 +1,14 @@
 import time
+import os
 
 def show_total_history(total):
+    # if file does not exist, create it
+    if not os.path.exists('./log'):
+        os.makedirs('./log')
+    if not os.path.exists('./log/record.txt'):
+        f = open('./log/record.txt', 'w')
+        f.close()
+    
     f = open('./log/record.txt', 'r')
     line = 'empty\n'
     for line in f:

@@ -11,8 +11,6 @@ import threading
 import keyboard  # To detect 'q' key press
 import random
 
-import sys ; sys.setrecursionlimit(sys.getrecursionlimit() * 50)
-
 pyautogui.FAILSAFE = False
 
 class AlbionGoldSystem:
@@ -97,7 +95,7 @@ class AlbionGoldSystem:
                 self.selling = False
 
             # Periodic display
-            if time.time() - self.showing_time > 10:
+            if time.time() - self.showing_time > 60 * 30:
                 self.handle_periodic_display()
 
             # Daily reset
