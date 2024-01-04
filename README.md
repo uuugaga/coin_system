@@ -27,3 +27,5 @@ https://blog.csdn.net/weixin_45567535/article/details/118673139
 3. Open your coin market.
 
 4. Run `main.py` in project root directory.
+
+- Press `q` to stop the program.
