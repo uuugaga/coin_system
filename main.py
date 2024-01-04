@@ -115,8 +115,6 @@ class AlbionGoldSystem:
             # Check if sold
             if self.selling and action.check_sold(refresh=False):
                 self.selling = False
-                action.Sell_GoldCoin_Cancel(refresh=False)
-                self.selling = False
 
                 # Selling logic
                 if not self.selling:
