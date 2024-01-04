@@ -18,8 +18,8 @@ def show_total_history(total):
 
     localtime = time.localtime(time.time())
     f = open('./log/record.txt', 'a+')
-    f.write(f'{total / 1000000:.3f}m, {localtime.tm_year}/{localtime.tm_mon}/{localtime.tm_mday} | {localtime.tm_hour}:{localtime.tm_min}:{localtime.tm_sec}')
-    print(f'current --> {total / 1000000:.3f}m, {localtime.tm_year}/{localtime.tm_mon}/{localtime.tm_mday} | {localtime.tm_hour}:{localtime.tm_min}:{localtime.tm_sec}')
+    f.write(f'{total / 1000000:.3f} m, {localtime.tm_year}/{localtime.tm_mon}/{localtime.tm_mday} | {localtime.tm_hour}:{localtime.tm_min}:{localtime.tm_sec}')
+    print(f'current --> {total / 1000000:.3f} m, {localtime.tm_year}/{localtime.tm_mon}/{localtime.tm_mday} | {localtime.tm_hour}:{localtime.tm_min}:{localtime.tm_sec}')
     f.write('\n')
     f.close()
 

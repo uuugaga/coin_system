@@ -28,4 +28,4 @@ https://blog.csdn.net/weixin_45567535/article/details/118673139
 
 4. Run `main.py` in project root directory.
 
-- Press `q` to stop the program.
+- Press `q` to stop the program. (Need some time to stop)
