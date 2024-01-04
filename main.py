@@ -143,7 +143,7 @@ class AlbionGoldSystem:
         valuation = total_gold * (buy_price - 1) + total_silver - self.valuation_start
         # print("----------------------------------------------------------------")
         # print(f'Asset gold={total_gold}, asset silver={total_silver}, buy price:{buy_price}, sell price:{sell_price}')
-        print(f'Valuation: {(valuation / 1000000):3f} m, Rate: {((valuation - self.valuation_previous) * 6 / 1000000):3f} (m/hr), Duration: {datetime.datetime.now().replace(microsecond=0) - self.start_datetime}')
+        print(f'Valuation: {(valuation / 1000000):3f} m, Rate: {((valuation - self.valuation_previous) * 2 / 1000000):3f} (m/hr), Duration: {datetime.datetime.now().replace(microsecond=0) - self.start_datetime}')
         self.valuation_previous = copy.deepcopy(valuation)
 
     def handle_daily_reset(self):
