@@ -12,35 +12,39 @@ def point_dist(x1, y1, x2, y2):
 
 def smooth_mouse_move(x2, y2):
     """Move the mouse to (x2, y2) in a smooth, human-like curve."""
-    cp = random.randint(4, 8)  # Number of control points. Must be at least 2.
-    x1, y1 = pyautogui.position()  # Starting position
+    try:
+        cp = random.randint(4, 6)  # Number of control points. Must be at least 2.
+        x1, y1 = pyautogui.position()  # Starting position
 
-    # Distribute control points between start and destination evenly.
-    x = np.linspace(x1, x2, num=cp, dtype='int')
-    y = np.linspace(y1, y2, num=cp, dtype='int')
+        # Distribute control points between start and destination evenly.
+        x = np.linspace(x1, x2, num=cp, dtype='int')
+        y = np.linspace(y1, y2, num=cp, dtype='int')
 
-    # Randomize inner points a bit (+-RND at most).
-    RND = 10
-    xr = [random.randint(-RND, RND) for k in range(cp)]
-    yr = [random.randint(-RND, RND) for k in range(cp)]
-    xr[0] = yr[0] = xr[-1] = yr[-1] = 0
-    x += xr
-    y += yr
+        # Randomize inner points a bit (+-RND at most).
+        RND = 10
+        xr = [random.randint(-RND, RND) for k in range(cp)]
+        yr = [random.randint(-RND, RND) for k in range(cp)]
+        xr[0] = yr[0] = xr[-1] = yr[-1] = 0
+        x += xr
+        y += yr
 
-    # Approximate using Bezier spline.
-    degree = 3 if cp > 3 else cp - 1  # Degree of b-spline. 3 is recommended.
-                                      # Must be less than number of control points.
-    tck, u = interpolate.splprep([x, y], k=degree)
-    # Move up to a certain number of points
-    u = np.linspace(0, 1, num=2+int(point_dist(x1, y1, x2, y2)/50.0))
-    points = interpolate.splev(u, tck)
+        # Approximate using Bezier spline.
+        degree = 3 if cp > 3 else cp - 1  # Degree of b-spline. 3 is recommended.
+                                        # Must be less than number of control points.
+        tck, u = interpolate.splprep([x, y], k=degree)
+        # Move up to a certain number of points
+        u = np.linspace(0, 1, num=2+int(point_dist(x1, y1, x2, y2)/50.0))
+        points = interpolate.splev(u, tck)
 
-    # Move mouse.
-    duration = 0.1
-    timeout = duration / len(points[0])
-    point_list = zip(*(i.astype(int) for i in points))
-    for point in point_list:
-        pyautogui.moveTo(*point, duration=timeout, tween=pyautogui.easeInOutQuad)
+        # Move mouse.
+        duration = 0.1
+        timeout = duration / len(points[0])
+        point_list = zip(*(i.astype(int) for i in points))
+        for point in point_list:
+            pyautogui.moveTo(*point, duration=timeout, tween=pyautogui.easeInOutQuad)
+            
+    except ValueError:
+            pyautogui.moveTo(x2, y2, duration=0.3, tween=pyautogui.easeInOutQuad)
 
 def click(coordinates):
     smooth_mouse_move(coordinates[0], coordinates[1])
