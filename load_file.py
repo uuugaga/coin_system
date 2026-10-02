@@ -23,6 +23,29 @@ def show_total_history(total):
     f.write('\n')
     f.close()
 
+def read_last_total():
+    """
+    Return the most recently recorded total assets, or None if there is no
+    record yet. Used to sanity check a freshly read market: a client that has
+    not finished syncing after logging in shows numbers that look valid but
+    are a fraction of what is really there.
+    """
+    try:
+        # Tolerant about encoding: the file is written with whatever the
+        # console default is, and an editor may have added a BOM.
+        with open('./log/record.txt', 'r', encoding='utf-8-sig', errors='ignore') as f:
+            lines = [line for line in f if line.strip()]
+    except OSError:
+        return None
+
+    for line in reversed(lines):
+        try:
+            return float(line.split('m,')[0].strip()) * 1000000
+        except (ValueError, IndexError):
+            continue
+    return None
+
+
 def read_config():
     f = open('config.txt', 'r')
     setting = []

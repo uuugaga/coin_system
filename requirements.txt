@@ -1,7 +1,36 @@
+# cnstd brings in torch, torchvision, opencv and the rest of the OCR stack, but
+# it has to be installed separately, with --no-deps: it declares Polygon3, which
+# ships only as C source and so needs MSVC to build, while nothing in cnstd
+# actually imports it (its Polygon comes from shapely). Its real dependencies
+# are listed below instead. So:
+#
+#   pip install -r requirements.txt
+#   pip install --no-deps "cnstd>=1.2.2,<1.2.3"
+#
+# The 1.2.2 series because the bundled cnocr is 2.2.2.3, and numpy stays on 1.x
+# because that release of cnocr predates numpy 2.
+
 pypiwin32
 pyautogui
-numpy
+numpy<2
 scipy
-cnstd
 onnxruntime
 keyboard
+opencv-python<4.11
+
+# cnstd's own dependencies, minus Polygon3
+torch>=1.8.0
+torchvision>=0.9.0
+click
+tqdm
+pyyaml
+unidecode
+pandas
+pytorch-lightning
+pillow>=5.3.0
+shapely
+pyclipper
+matplotlib
+seaborn
+onnx
+requests

@@ -6,12 +6,19 @@ import load_file
 import action
 import click
 import position
+import window
 import copy
 import threading
 import keyboard  # To detect 'q' key press
 import random
 
 pyautogui.FAILSAFE = False
+
+# The server forces everyone out for maintenance every morning around 07:00.
+# Orders are cancelled from MAINTENANCE_STOP on, and the bot logs back in at
+# RELOGIN_AT, once maintenance is surely over.
+MAINTENANCE_STOP = datetime.time(6, 50)
+RELOGIN_AT = datetime.time(9, 0)
 
 class AlbionGoldSystem:
     def __init__(self):
@@ -22,8 +29,6 @@ class AlbionGoldSystem:
         self.showing_time = time.time()
         self.buying = False
         self.selling = False
-        self.buying_price_record = 0
-        self.selling_price_record = 0
         self.valuation_start = 0
 
     def stop(self):
@@ -35,7 +40,7 @@ class AlbionGoldSystem:
         """Main function of the Albion Gold System."""
         self.start_datetime = datetime.datetime.now().replace(microsecond=0)
 
-        total_gold, total_silver, buy_price, sell_price = action.get_info(0)
+        total_gold, total_silver, buy_price, sell_price = action.get_info()
         self.valuation_start = total_gold * buy_price + total_silver
         load_file.show_total_history(self.valuation_start)
 
@@ -45,9 +50,7 @@ class AlbionGoldSystem:
 
         while self.running:
             time.sleep(random.uniform(5, 10))
-            average_price_record = (self.buying_price_record + self.selling_price_record) // 2
-            total_gold, total_silver, buy_price, sell_price = action.get_info(average_price_record)
-            self.buying_price_record, self.selling_price_record = copy.deepcopy(buy_price), copy.deepcopy(sell_price)
+            total_gold, total_silver, buy_price, sell_price = action.get_info()
 
             click.click(position.Order)
 
@@ -100,8 +103,7 @@ class AlbionGoldSystem:
                 self.handle_periodic_display()
 
             # Daily reset
-            localtime = time.localtime(time.time())
-            if localtime.tm_hour == 6 and 49 < localtime.tm_min < 59:
+            if MAINTENANCE_STOP <= datetime.datetime.now().time() < RELOGIN_AT:
                 self.handle_daily_reset()
 
     def handle_periodic_display(self):
@@ -115,7 +117,7 @@ class AlbionGoldSystem:
             self.selling = False
 
         
-        total_gold, total_silver, buy_price, sell_price = action.get_info(0)
+        total_gold, total_silver, buy_price, sell_price = action.get_info()
         valuation = total_gold * (buy_price - 1) + total_silver - self.valuation_start
         # print("----------------------------------------------------------------")
         # print(f'Asset gold={total_gold}, asset silver={total_silver}, buy price:{buy_price}, sell price:{sell_price}')
@@ -131,27 +133,45 @@ class AlbionGoldSystem:
             action.Sell_GoldCoin_Cancel()
             self.selling = False
 
-        time.sleep(60 * 30)  # Sleep for 30 minutes
+        print(f'Waiting out server maintenance, logging in again at {RELOGIN_AT:%H:%M}')
+        self.wait_until(RELOGIN_AT)
+        if not self.running:
+            return
         action.login()
 
         self.start_datetime = datetime.datetime.now().replace(microsecond=0)
-        total_gold, total_silver, buy_price, sell_price = action.get_info(self.average_price_record)
+        # after_login, because a client that has just logged back in can show
+        # a fraction of the real assets until it finishes syncing.
+        total_gold, total_silver, buy_price, sell_price = action.get_info(after_login=True)
         self.valuation_start = total_gold * buy_price + total_silver
         load_file.show_total_history(self.valuation_start)
-        self.buying_price_record = copy.deepcopy(buy_price)
-        self.selling_price_record = copy.deepcopy(sell_price)
 
         self.showing_time = time.time()
         self.valuation_previous = 0
+
+    def wait_until(self, target):
+        """Sleep until the wall clock reaches target today, or until 'q' is pressed."""
+        while self.running and datetime.datetime.now().time() < target:
+            time.sleep(5)
 
 if __name__ == '__main__':
     print('----- START -----')
     time.sleep(2)
 
-    window_handle = win32gui.FindWindow(None, "Albion Online Client")
+    window_handle = window.find_window()
     win32gui.SetForegroundWindow(window_handle)
 
     albion_system = AlbionGoldSystem()
-    stop_thread = threading.Thread(target=albion_system.stop)
+    # Daemon, so that if main() dies the process exits instead of silently
+    # hanging on the 'q' listener.
+    stop_thread = threading.Thread(target=albion_system.stop, daemon=True)
     stop_thread.start()
-    albion_system.main()
+
+    # Lets 'q' interrupt the long waits inside action, such as sitting out a
+    # server outage.
+    action.should_stop = lambda: not albion_system.running
+
+    try:
+        albion_system.main()
+    except action.Stopped:
+        print('----- STOPPED -----')

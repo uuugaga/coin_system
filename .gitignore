@@ -2,8 +2,13 @@ build/
 dist/
 log/
 __pycache__/
+.venv/
+debug/overlay.png
+debug/client.png
+debug/incidents/
 
 
 main.spec
 
 
+debug/ocr/
